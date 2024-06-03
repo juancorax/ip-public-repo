@@ -37,7 +37,25 @@ def search(request):
     search_msg = request.POST.get("query", "")
 
     # si el usuario no ingresó texto alguno, debe refrescar la página; caso contrario, debe filtrar aquellas imágenes que posean el texto de búsqueda.
-    pass
+    filtered_images = []
+
+    if not search_msg:
+        for img in images:
+            if "space" in img.title.lower() or "space" in img.description.lower():
+                filtered_images.append(img)
+    else:
+        for img in images:
+            if (
+                search_msg.lower() in img.title.lower()
+                or search_msg.lower() in img.description.lower()
+            ):
+                filtered_images.append(img)
+
+    return render(
+        request,
+        "home.html",
+        {"images": filtered_images, "favourite_list": favourite_list},
+    )
 
 
 # las siguientes funciones se utilizan para implementar la sección de favoritos: traer los favoritos de un usuario, guardarlos, eliminarlos y desloguearse de la app.
